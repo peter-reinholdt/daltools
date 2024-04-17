@@ -26,6 +26,8 @@ def readin(inputfile):
 #
     symline = lines[3]
     atom_types = int(symline[1:5])
+    # C indicates cartesian basis, spherical basis is default
+    spherical_basis = (symline[0] != "C")
 #   charge = float(symline[5:8])
 #
 # The molecule is a list of atom types which are hashes with structure
@@ -38,6 +40,7 @@ def readin(inputfile):
     molecule = []
     for _ in range(atom_types):
         atom = {}
+        atom['spherical_basis'] = spherical_basis
         molecule.append(atom)
         atline = lines.pop(4)
         atfield = atline.split()
@@ -124,8 +127,12 @@ def atoms_in(molecule):
                 contracted_l = 0
                 for block in bas:
                     cont = block['cont']
-                    contracted += len(cont[0])*(2*_l+1)
-                    contracted_l += len(cont[0])*(2*_l+1)
+                    if atype['spherical_basis']:
+                        contracted += len(cont[0])*(2*_l+1)
+                        contracted_l += len(cont[0])*(2*_l+1)
+                    else:
+                        contracted += len(cont[0])*((_l+1)*(_l+2)//2)
+                        contracted_l += len(cont[0])*((_l+1)*(_l+2)//2)
                 atom[SPD[_l]] = contracted_l
             atom["contracted"] = contracted
             atomlist.append(atom)
