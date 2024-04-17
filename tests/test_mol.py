@@ -10,6 +10,7 @@ from . import tmpdir
 
 def _test_data(label, charge, prim, cont):
     return {
+        'spherical_basis': True,
         'charge': charge,
         'label': [label],
         'center': [[0, 0, 0]],
